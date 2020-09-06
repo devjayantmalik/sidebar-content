@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Sidebar from "./Sidebar";
+import Content from "./Content";
 
-function App() {
+const App = () => {
+  const [currentElement, setCurrentElement] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // change mobile state on resize
+    window.onresize = (e) =>
+      e.target.window.innerWidth < 900 ? setIsMobile(true) : setIsMobile(false);
+
+    // set mobile state initially
+    window.innerWidth < 900 ? setIsMobile(true) : setIsMobile(false);
+  }, []);
+
+  if (isMobile && currentElement) {
+    return (
+      <div className="d-flex-row">
+        <Content
+          currentElement={currentElement}
+          setCurrentElement={setCurrentElement}
+        />
+      </div>
+    );
+  }
+
+  if (isMobile && !currentElement) {
+    return (
+      <div className="d-flex-row">
+        <Sidebar setState={setCurrentElement} />
+      </div>
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="d-flex-row">
+      <Sidebar setState={setCurrentElement} />
+      <Content
+        currentElement={currentElement}
+        setCurrentElement={setCurrentElement}
+      />
     </div>
   );
-}
+};
 
 export default App;
